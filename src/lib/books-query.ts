@@ -25,6 +25,9 @@ export function getFilteredBooks(params: {
     case "new":
       result = result.filter((b) => b.isNewArrival);
       break;
+    case "sale":
+      result = result.filter((b) => b.isOnSale);
+      break;
     case "price-asc":
       result = [...result].sort((a, b) => a.price - b.price);
       break;

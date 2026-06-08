@@ -31,20 +31,22 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
   const categoryBooks = getBooksByCategory(slug);
 
   return (
-    <div className="bg-ivory min-h-screen">
-      <div className="bg-cream border-b border-border py-10 lg:py-14">
+    <div className="bg-cream min-h-screen">
+      <div className="py-12 lg:py-16 border-b border-brick/20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <nav className="font-ui text-sm text-charcoal-muted mb-4">
-            <Link href="/categories" className="hover:text-brown transition-colors">
+          <nav className="font-ui text-sm text-press-muted mb-6">
+            <Link href="/categories" className="text-brick hover:opacity-70 transition-opacity">
               Categories
             </Link>
             <span className="mx-2">/</span>
-            <span className="text-brown">{category.name}</span>
+            <span className="text-press">{category.name}</span>
           </nav>
-          <h1 className="heading-page mb-2">{category.name}</h1>
+          <p className="section-label mb-4">{category.name}</p>
+          <hr className="hairline mb-8" />
+          <h1 className="heading-page mb-3">{category.name}</h1>
           <p className="text-body max-w-2xl">{category.description}</p>
-          <p className="font-ui text-sm text-gold-muted mt-3">
-            {categoryBooks.length} title{categoryBooks.length !== 1 ? "s" : ""} in this category
+          <p className="font-ui text-sm text-brick mt-4">
+            {categoryBooks.length} title{categoryBooks.length !== 1 ? "s" : ""}
           </p>
         </div>
       </div>

@@ -30,26 +30,30 @@ export default async function BooksPage({ searchParams }: BooksPageProps) {
     params.sort === "bestsellers"
       ? "Bestsellers"
       : params.sort === "new"
-        ? "New Arrivals & Forthcoming"
-        : "Books";
+        ? "New arrivals"
+        : params.sort === "sale"
+          ? "Sale books"
+          : "Books";
 
   return (
-    <div className="bg-ivory min-h-screen">
-      <div className="bg-cream border-b border-border py-10 lg:py-12">
+    <div className="bg-cream min-h-screen">
+      <div className="py-12 lg:py-16 border-b border-brick/20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <h1 className="heading-page mb-2">{title}</h1>
-          <p className="text-body mb-6 max-w-2xl">
-            {filtered.length} title{filtered.length !== 1 ? "s" : ""} available
+          <p className="section-label mb-4">Catalogue</p>
+          <hr className="hairline mb-8" />
+          <h1 className="heading-page mb-3">{title}</h1>
+          <p className="text-body mb-8">
+            {filtered.length} title{filtered.length !== 1 ? "s" : ""}
           </p>
-          <div className="max-w-xl">
+          <div className="max-w-2xl">
             <SearchBar variant="page" />
           </div>
         </div>
       </div>
 
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10">
-        <div className="grid lg:grid-cols-[240px_1fr] gap-10">
-          <Suspense fallback={<div className="h-64 bg-cream animate-pulse rounded-sm" />}>
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12">
+        <div className="grid lg:grid-cols-[220px_1fr] gap-10">
+          <Suspense fallback={<div className="h-64 bg-soft-grey animate-pulse rounded-[25px]" />}>
             <BookFilters />
           </Suspense>
           <BookGrid books={filtered} />

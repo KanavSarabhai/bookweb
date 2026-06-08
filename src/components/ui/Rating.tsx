@@ -9,7 +9,7 @@ interface RatingProps {
 }
 
 export function Rating({ value, reviewCount, size = "sm", className }: RatingProps) {
-  const iconSize = size === "sm" ? 14 : 16;
+  const iconSize = size === "sm" ? 13 : 15;
 
   return (
     <div className={cn("flex items-center gap-1.5", className)} aria-label={`Rated ${value} out of 5`}>
@@ -20,19 +20,19 @@ export function Rating({ value, reviewCount, size = "sm", className }: RatingPro
             size={iconSize}
             className={cn(
               i < Math.floor(value)
-                ? "fill-gold text-gold"
+                ? "fill-brick text-brick"
                 : i < value
-                  ? "fill-gold/50 text-gold"
-                  : "fill-none text-border"
+                  ? "fill-brick/40 text-brick"
+                  : "fill-none text-press-muted/30"
             )}
             aria-hidden
           />
         ))}
       </div>
-      <span className="font-ui text-charcoal-muted text-xs">
+      <span className="font-ui text-xs text-press-muted">
         {value.toFixed(1)}
         {reviewCount !== undefined && (
-          <span className="text-charcoal-muted/70"> ({reviewCount.toLocaleString()})</span>
+          <span className="text-press-muted/70"> ({reviewCount.toLocaleString()})</span>
         )}
       </span>
     </div>

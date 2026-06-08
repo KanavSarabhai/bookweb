@@ -5,7 +5,6 @@ interface BookCoverProps {
   book: Pick<Book, "title" | "author" | "coverColor" | "coverAccent">;
   size?: "sm" | "md" | "lg" | "xl";
   className?: string;
-  priority?: boolean;
 }
 
 const sizeClasses = {
@@ -22,56 +21,45 @@ export function BookCover({ book, size = "md", className }: BookCoverProps) {
 
   return (
     <div
-      className={cn(
-        "relative shrink-0 overflow-hidden rounded-sm shadow-md transition-shadow duration-300 group-hover:shadow-lg",
-        sizeClasses[size],
-        className
-      )}
+      className={cn("relative shrink-0 overflow-hidden", sizeClasses[size], className)}
       style={{ backgroundColor: book.coverColor }}
       role="img"
       aria-label={`Cover of ${book.title}`}
     >
       <div
-        className="absolute inset-0 opacity-20"
-        style={{
-          background: `linear-gradient(135deg, ${book.coverAccent}40 0%, transparent 60%)`,
-        }}
+        className="absolute inset-x-0 top-0 h-0.5"
+        style={{ backgroundColor: book.coverAccent }}
       />
-      <div className="absolute inset-x-0 top-0 h-1" style={{ backgroundColor: book.coverAccent }} />
       <div className="flex h-full flex-col justify-between p-3">
         <span
-          className="font-ui text-[0.6rem] font-semibold uppercase tracking-widest opacity-70"
+          className="font-ui text-[0.55rem] font-medium uppercase tracking-widest opacity-60"
           style={{ color: book.coverAccent }}
         >
           Technical
         </span>
         <div>
           <p
-            className="font-ui text-[0.6875rem] leading-tight font-semibold"
+            className="font-ui text-[0.65rem] leading-tight font-semibold"
             style={{ color: book.coverAccent }}
           >
             {titleLine}
           </p>
           {subtitle && (
             <p
-              className="font-ui mt-0.5 text-[0.625rem] leading-tight opacity-80"
+              className="font-ui mt-0.5 text-[0.6rem] leading-tight opacity-75"
               style={{ color: book.coverAccent }}
             >
               {subtitle}
             </p>
           )}
           <p
-            className="font-ui mt-2 text-[0.625rem] opacity-60"
+            className="font-ui mt-2 text-[0.55rem] opacity-50"
             style={{ color: book.coverAccent }}
           >
             {book.author.split(",")[0]}
           </p>
         </div>
       </div>
-      <div
-        className="absolute right-0 top-0 bottom-0 w-1.5 opacity-30"
-        style={{ backgroundColor: book.coverAccent }}
-      />
     </div>
   );
 }

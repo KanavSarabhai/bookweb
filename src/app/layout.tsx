@@ -1,20 +1,20 @@
 import type { Metadata } from "next";
-import { Lora, Inter } from "next/font/google";
+import { Playfair_Display, Inter } from "next/font/google";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import "./globals.css";
 
-const lora = Lora({
-  variable: "--font-lora",
+const playfair = Playfair_Display({
+  variable: "--font-playfair",
   subsets: ["latin"],
-  weight: ["500", "600", "700"],
+  weight: ["400", "500"],
   display: "swap",
 });
 
 const inter = Inter({
   variable: "--font-inter",
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
+  weight: ["400", "500", "600"],
   display: "swap",
 });
 
@@ -42,11 +42,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${lora.variable} ${inter.variable} min-h-screen flex flex-col antialiased`}
+        className={`${playfair.variable} ${inter.variable} min-h-screen flex flex-col antialiased bg-cream text-press`}
       >
         <a
           href="#main-content"
-          className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-brown focus:text-ivory font-ui text-sm rounded-sm"
+          className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-brick focus:text-cream font-ui text-sm rounded-[var(--radius-link)]"
         >
           Skip to main content
         </a>

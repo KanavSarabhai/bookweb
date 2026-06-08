@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Search, X, BookOpen, User, Tag, Building2 } from "lucide-react";
 import { getInstantSuggestions } from "@/lib/search";
 import type { SearchSuggestion } from "@/lib/search";
+import { categories } from "@/lib/data/categories";
 import { cn } from "@/lib/utils";
 
 interface SearchBarProps {
@@ -13,6 +14,7 @@ interface SearchBarProps {
   className?: string;
   autoFocus?: boolean;
   defaultQuery?: string;
+  showCategoryFilter?: boolean;
 }
 
 const typeIcons = {
@@ -24,13 +26,15 @@ const typeIcons = {
 
 export function SearchBar({
   variant = "header",
-  placeholder = "Search books, authors, ISBN, subjects…",
+  placeholder = "Search by title, author, ISBN, or category...",
   className,
   autoFocus,
   defaultQuery = "",
+  showCategoryFilter = true,
 }: SearchBarProps) {
   const router = useRouter();
   const [query, setQuery] = useState(defaultQuery);
+  const [category, setCategory] = useState("");
   const [suggestions, setSuggestions] = useState<SearchSuggestion[]>([]);
   const [open, setOpen] = useState(false);
   const [activeIndex, setActiveIndex] = useState(-1);
@@ -53,6 +57,14 @@ export function SearchBar({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  function navigateSearch() {
+    const params = new URLSearchParams();
+    if (query.trim()) params.set("q", query.trim());
+    if (category) params.set("category", category);
+    router.push(`/search?${params.toString()}`);
+    setOpen(false);
+  }
+
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (activeIndex >= 0 && suggestions[activeIndex]) {
@@ -60,10 +72,7 @@ export function SearchBar({
       setOpen(false);
       return;
     }
-    if (query.trim()) {
-      router.push(`/search?q=${encodeURIComponent(query.trim())}`);
-      setOpen(false);
-    }
+    navigateSearch();
   }
 
   function handleKeyDown(e: React.KeyboardEvent) {
@@ -79,25 +88,22 @@ export function SearchBar({
     }
   }
 
-  const sizeClasses = {
-    header: "h-10 text-sm",
-    hero: "h-12 text-base",
-    page: "h-12 text-base",
-  };
+  const isPill = variant === "hero" || variant === "page";
+  const heightClass = variant === "header" ? "h-9" : "h-14";
 
   return (
     <div ref={containerRef} className={cn("relative w-full", className)}>
-      <form onSubmit={handleSubmit} role="search">
+      <form onSubmit={handleSubmit} role="search" className="flex flex-col sm:flex-row gap-3">
         <div
           className={cn(
-            "flex items-center gap-2 bg-surface border border-border rounded-sm transition-colors duration-200 focus-within:border-gold-muted focus-within:shadow-sm",
-            variant === "hero" && "shadow-md border-cream-dark",
-            sizeClasses[variant]
+            "flex flex-1 items-center gap-2 bg-white/50 border border-[#121212]/10 transition-all focus-within:border-[#121212]/20 focus-within:bg-white/80",
+            isPill ? "rounded-[50px]" : "rounded-[50px]",
+            heightClass
           )}
         >
           <Search
-            className="ml-3 shrink-0 text-charcoal-muted"
-            size={variant === "header" ? 18 : 20}
+            className="ml-3 shrink-0 text-[#121212]/40"
+            size={variant === "header" ? 16 : 20}
             aria-hidden
           />
           <input
@@ -117,7 +123,7 @@ export function SearchBar({
             aria-expanded={open}
             aria-controls="search-suggestions"
             aria-autocomplete="list"
-            className="flex-1 bg-transparent font-ui text-charcoal placeholder:text-charcoal-muted/60 outline-none pr-2"
+            className="flex-1 bg-transparent font-ui text-sm text-press placeholder:text-press-muted/50 outline-none pr-2"
           />
           {query && (
             <button
@@ -128,20 +134,39 @@ export function SearchBar({
                 setOpen(false);
                 inputRef.current?.focus();
               }}
-              className="mr-2 p-1 text-charcoal-muted hover:text-brown transition-colors"
+              className="mr-3 p-1 text-press-muted hover:text-brick transition-opacity"
               aria-label="Clear search"
             >
               <X size={16} />
             </button>
           )}
         </div>
+
+        {showCategoryFilter && (
+          <select
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
+            aria-label="Filter by category"
+            className={cn(
+              "font-ui text-sm border border-brick text-brick bg-cream px-4 outline-none transition-opacity hover:opacity-70",
+              isPill ? "rounded-[50px] h-11 sm:h-14" : "rounded-[50px] h-11"
+            )}
+          >
+            <option value="">All categories</option>
+            {categories.map((c) => (
+              <option key={c.slug} value={c.slug}>
+                {c.name}
+              </option>
+            ))}
+          </select>
+        )}
       </form>
 
       {open && suggestions.length > 0 && (
         <ul
           id="search-suggestions"
           role="listbox"
-          className="absolute z-50 top-full left-0 right-0 mt-1 bg-surface border border-border rounded-sm shadow-lg overflow-hidden animate-fade-in"
+          className="absolute z-50 top-full left-0 right-0 mt-2 bg-cream border border-brick rounded-[12px] overflow-hidden animate-fade-in"
         >
           {suggestions.map((s, i) => {
             const Icon = typeIcons[s.type];
@@ -150,29 +175,26 @@ export function SearchBar({
                 <button
                   type="button"
                   className={cn(
-                    "w-full flex items-center gap-3 px-4 py-2.5 font-ui text-sm text-left transition-colors",
-                    i === activeIndex ? "bg-cream text-brown" : "hover:bg-cream/80 text-charcoal"
+                    "w-full flex items-center gap-3 px-4 py-3 font-ui text-sm text-left transition-opacity",
+                    i === activeIndex ? "bg-soft-grey opacity-100" : "hover:opacity-70 text-press"
                   )}
                   onMouseDown={() => {
                     router.push(s.href);
                     setOpen(false);
                   }}
                 >
-                  <Icon size={16} className="shrink-0 text-gold-muted" aria-hidden />
+                  <Icon size={16} className="shrink-0 text-brick" aria-hidden />
                   <span className="flex-1 truncate">{s.label}</span>
-                  <span className="text-xs text-charcoal-muted capitalize">{s.type}</span>
+                  <span className="text-xs text-press-muted capitalize">{s.type}</span>
                 </button>
               </li>
             );
           })}
-          <li className="border-t border-border">
+          <li className="border-t border-brick/20">
             <button
               type="button"
-              className="w-full px-4 py-2.5 font-ui text-sm text-gold hover:bg-cream/50 text-left transition-colors"
-              onMouseDown={() => {
-                router.push(`/search?q=${encodeURIComponent(query)}`);
-                setOpen(false);
-              }}
+              className="w-full px-4 py-3 font-ui text-sm text-brick text-left transition-opacity hover:opacity-70"
+              onMouseDown={navigateSearch}
             >
               View all results for &ldquo;{query}&rdquo;
             </button>

@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
 import { categories } from "@/lib/data/categories";
 
 export const metadata: Metadata = {
@@ -10,12 +9,14 @@ export const metadata: Metadata = {
 
 export default function CategoriesPage() {
   return (
-    <div className="bg-ivory min-h-screen">
-      <div className="bg-cream border-b border-border py-10 lg:py-14">
+    <div className="bg-cream min-h-screen">
+      <div className="py-12 lg:py-16 border-b border-brick/20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <h1 className="heading-page mb-2">All categories</h1>
+          <p className="section-label mb-4">Browse</p>
+          <hr className="hairline mb-8" />
+          <h1 className="heading-page mb-3">All categories</h1>
           <p className="text-body max-w-2xl">
-            Browse our catalog by subject — from artificial intelligence to engineering.
+            Browse our catalogue by subject — from artificial intelligence to academic titles.
           </p>
         </div>
       </div>
@@ -26,20 +27,11 @@ export default function CategoriesPage() {
             <Link
               key={cat.slug}
               href={`/categories/${cat.slug}`}
-              className="group flex items-center justify-between p-6 bg-surface border border-border rounded-sm hover:border-gold-subtle/50 hover:shadow-md transition-all"
+              className="card-editorial bg-soft-grey transition-opacity hover:opacity-80"
             >
-              <div>
-                <h2 className="font-ui text-lg font-semibold text-charcoal group-hover:text-brown transition-colors">
-                  {cat.name}
-                </h2>
-                <p className="font-ui text-sm text-charcoal-muted mt-1">{cat.description}</p>
-                <p className="font-ui text-xs text-gold-muted mt-2">{cat.bookCount}+ titles</p>
-              </div>
-              <ArrowRight
-                size={20}
-                className="text-charcoal-muted group-hover:text-brown shrink-0 transition-colors"
-                aria-hidden
-              />
+              <p className="section-label mb-2">{cat.name}</p>
+              <p className="text-body">{cat.description}</p>
+              <p className="font-ui text-xs text-brick mt-4">{cat.bookCount}+ titles →</p>
             </Link>
           ))}
         </div>

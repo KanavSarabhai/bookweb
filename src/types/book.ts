@@ -5,6 +5,7 @@ export interface Book {
   author: string;
   publisher: string;
   price: number;
+  originalPrice?: number;
   rating: number;
   reviewCount: number;
   category: string;
@@ -19,6 +20,7 @@ export interface Book {
   isBestseller?: boolean;
   isNewArrival?: boolean;
   isFeatured?: boolean;
+  isOnSale?: boolean;
 }
 
 export interface Category {

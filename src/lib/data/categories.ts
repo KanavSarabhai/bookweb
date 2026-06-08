@@ -71,6 +71,13 @@ export const categories: Category[] = [
     bookCount: 410,
     icon: "wrench",
   },
+  {
+    slug: "academic",
+    name: "Academic",
+    description: "Textbooks, reference, and study materials",
+    bookCount: 520,
+    icon: "book",
+  },
 ];
 
 export function getCategoryBySlug(slug: string): Category | undefined {

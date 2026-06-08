@@ -18,6 +18,8 @@ export const books: Book[] = [
     coverAccent: "#C4A35A",
     isBestseller: true,
     isFeatured: true,
+    isOnSale: true,
+    originalPrice: 279500,
     binding: "Paperback",
     language: "English",
     description:
@@ -113,6 +115,8 @@ export const books: Book[] = [
     coverColor: "#8B4513",
     coverAccent: "#FAF8F4",
     isBestseller: true,
+    isOnSale: true,
+    originalPrice: 259500,
     binding: "Paperback",
     language: "English",
   },
@@ -167,6 +171,8 @@ export const books: Book[] = [
     coverColor: "#3D2914",
     coverAccent: "#B8860B",
     isBestseller: true,
+    isOnSale: true,
+    originalPrice: 179500,
     binding: "Paperback",
     language: "English",
   },
@@ -312,6 +318,8 @@ export const books: Book[] = [
     coverColor: "#3D2914",
     coverAccent: "#D4B896",
     isBestseller: true,
+    isOnSale: true,
+    originalPrice: 319500,
     binding: "Paperback",
     language: "English",
   },
@@ -456,6 +464,10 @@ export function getNewArrivals(limit = 8): Book[] {
 
 export function getFeaturedBooks(limit = 6): Book[] {
   return books.filter((b) => b.isFeatured).slice(0, limit);
+}
+
+export function getSaleBooks(limit = 8): Book[] {
+  return books.filter((b) => b.isOnSale).slice(0, limit);
 }
 
 export function getBooksByCategory(categorySlug: string): Book[] {

@@ -31,7 +31,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
     .slice(0, 4);
 
   return (
-    <div className="bg-ivory min-h-screen py-10 lg:py-14">
+    <div className="bg-cream min-h-screen py-10 lg:py-14">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <ProductDetail book={book} related={related} />
       </div>

@@ -1,7 +1,7 @@
-import Link from "next/link";
+import { ActionLink } from "@/components/ui/ActionLink";
 import { cn } from "@/lib/utils";
 
-type ButtonVariant = "primary" | "secondary" | "ghost" | "outline";
+type ButtonVariant = "primary" | "secondary" | "ghost" | "outline" | "text";
 type ButtonSize = "sm" | "md" | "lg";
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
@@ -9,50 +9,51 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   size?: ButtonSize;
   href?: string;
   children: React.ReactNode;
+  pill?: boolean;
 }
 
-const variants: Record<ButtonVariant, string> = {
-  primary:
-    "bg-brown text-ivory hover:bg-brown-light border border-brown shadow-sm",
-  secondary:
-    "bg-cream text-brown border border-border hover:bg-cream-dark",
-  ghost: "bg-transparent text-brown hover:bg-cream border border-transparent",
-  outline:
-    "bg-transparent text-brown border border-brown hover:bg-brown hover:text-ivory",
-};
-
 const sizes: Record<ButtonSize, string> = {
-  sm: "px-4 py-2 text-sm",
-  md: "px-6 py-2.5 text-sm",
-  lg: "px-8 py-3 text-base",
+  sm: "text-xs px-4 py-2",
+  md: "text-sm px-5 py-2.5",
+  lg: "text-sm px-6 py-3",
 };
 
 export function Button({
-  variant = "primary",
+  variant = "outline",
   size = "md",
   href,
   className,
   children,
+  pill,
+  onClick,
+  type = "button",
   ...props
 }: ButtonProps) {
-  const classes = cn(
-    "inline-flex items-center justify-center gap-2 font-ui text-[0.9375rem] font-medium rounded-sm transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-muted",
-    variants[variant],
-    sizes[size],
-    className
-  );
+  const linkVariant = variant === "text" || variant === "ghost" ? "text" : "outline";
 
   if (href) {
     return (
-      <Link href={href} className={classes}>
+      <ActionLink
+        href={href}
+        variant={linkVariant}
+        pill={pill}
+        className={cn(sizes[size], className)}
+      >
         {children}
-      </Link>
+      </ActionLink>
     );
   }
 
   return (
-    <button type="button" className={classes} {...props}>
+    <ActionLink
+      type={type}
+      variant={linkVariant}
+      pill={pill}
+      className={cn(sizes[size], className)}
+      onClick={onClick}
+      ariaLabel={props["aria-label"]}
+    >
       {children}
-    </button>
+    </ActionLink>
   );
 }

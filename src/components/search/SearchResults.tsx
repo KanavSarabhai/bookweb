@@ -31,6 +31,9 @@ export function SearchResults() {
     router.push(`/search?${next.toString()}`);
   }
 
+  const chipClass =
+    "font-ui text-sm border border-brick text-brick rounded-[50px] px-4 py-2 bg-cream outline-none transition-opacity hover:opacity-70";
+
   return (
     <>
       <div className="max-w-2xl mb-8">
@@ -43,32 +46,36 @@ export function SearchResults() {
           value={params.category}
           options={categories.map((c) => ({ value: c.slug, label: c.name }))}
           onChange={(v) => setFilter("category", v)}
+          className={chipClass}
         />
         <FilterChip
           label="Author"
           value={params.author}
           options={authors.map((a) => ({ value: a, label: a }))}
           onChange={(v) => setFilter("author", v)}
+          className={chipClass}
         />
         <FilterChip
           label="Publisher"
           value={params.publisher}
           options={publishers.map((p) => ({ value: p, label: p }))}
           onChange={(v) => setFilter("publisher", v)}
+          className={chipClass}
         />
         <FilterChip
           label="Subject"
           value={params.subject}
           options={categories.map((c) => ({ value: c.slug, label: c.name }))}
           onChange={(v) => setFilter("subject", v)}
+          className={chipClass}
         />
       </div>
 
-      <p className="font-ui text-sm text-charcoal-muted mb-6">
+      <p className="font-ui text-sm text-press-muted mb-8">
         {params.q ? (
           <>
             {results.length} result{results.length !== 1 ? "s" : ""} for &ldquo;
-            <strong className="text-brown">{params.q}</strong>&rdquo;
+            <strong className="text-press">{params.q}</strong>&rdquo;
           </>
         ) : (
           <>
@@ -87,18 +94,20 @@ function FilterChip({
   value,
   options,
   onChange,
+  className,
 }: {
   label: string;
   value?: string;
   options: { value: string; label: string }[];
   onChange: (value: string) => void;
+  className: string;
 }) {
   return (
     <select
       value={value ?? ""}
       onChange={(e) => onChange(e.target.value)}
       aria-label={`Filter by ${label}`}
-      className="font-ui text-sm border border-border rounded-sm px-3 py-2 bg-surface text-charcoal hover:border-gold-muted outline-none transition-colors"
+      className={className}
     >
       <option value="">{label}</option>
       {options.map((o) => (
