@@ -2,6 +2,7 @@ export interface HeroBook {
   slug: string;
   title: string;
   author: string;
+  /** Local path under /public, e.g. /books/fluent-python-2nd-edition.jpg */
   coverUrl: string;
   spineColor: string;
   depth: "forward" | "behind";
@@ -13,7 +14,7 @@ export const heroShowcaseBooks: HeroBook[] = [
     slug: "fluent-python-2nd-edition",
     title: "Fluent Python",
     author: "Luciano Ramalho",
-    coverUrl: "https://covers.openlibrary.org/b/isbn/9781492056359-L.jpg",
+    coverUrl: "/books/fluent python.jpg",
     spineColor: "#1e3d32",
     depth: "forward",
     position: 0,
@@ -22,7 +23,7 @@ export const heroShowcaseBooks: HeroBook[] = [
     slug: "designing-machine-learning-systems",
     title: "Designing Machine Learning Systems",
     author: "Chip Huyen",
-    coverUrl: "https://covers.openlibrary.org/b/isbn/9781098107963-L.jpg",
+    coverUrl: "/books/designing-ml.jpg",
     spineColor: "#2a2420",
     depth: "behind",
     position: 1,
@@ -31,7 +32,7 @@ export const heroShowcaseBooks: HeroBook[] = [
     slug: "kubernetes-book-2026",
     title: "The Kubernetes Book",
     author: "Nigel Poulton",
-    coverUrl: "https://covers.openlibrary.org/b/isbn/9781838824464-L.jpg",
+    coverUrl: "/books/kubernetes-book-2026.jpg",
     spineColor: "#1a4d8c",
     depth: "forward",
     position: 2,
@@ -40,7 +41,7 @@ export const heroShowcaseBooks: HeroBook[] = [
     slug: "system-design-interview",
     title: "System Design Interview",
     author: "Alex Xu",
-    coverUrl: "https://covers.openlibrary.org/b/isbn/9781736049117-L.jpg",
+    coverUrl: "/books/system design.jpg",
     spineColor: "#1a1a2e",
     depth: "behind",
     position: 3,

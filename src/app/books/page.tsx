@@ -26,36 +26,69 @@ export default async function BooksPage({ searchParams }: BooksPageProps) {
   const params = await searchParams;
   const filtered = getFilteredBooks(params);
 
-  const title =
+  const heading =
     params.sort === "bestsellers"
       ? "Bestsellers"
       : params.sort === "new"
-        ? "New arrivals"
+        ? "New Arrivals"
         : params.sort === "sale"
-          ? "Sale books"
-          : "Books";
+          ? "On Sale"
+          : params.q
+            ? `Results for "${params.q}"`
+            : params.category
+              ? "Category"
+              : "Discover Books That Shape Builders";
 
   return (
-    <div className="bg-cream min-h-screen">
-      <div className="py-12 lg:py-16 border-b border-brick/20">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <p className="section-label mb-4">Catalogue</p>
-          <hr className="hairline mb-8" />
-          <h1 className="heading-page mb-3">{title}</h1>
-          <p className="text-body mb-8">
-            {filtered.length} title{filtered.length !== 1 ? "s" : ""}
+    <div style={{ background: "var(--surface)", minHeight: "100vh" }}>
+
+      {/* ── Editorial hero header ── */}
+      <div
+        className="border-b"
+        style={{
+          background: "linear-gradient(160deg, #f8f5f0 0%, #f2ece2 100%)",
+          borderColor: "var(--border)",
+          paddingTop: "80px",
+          paddingBottom: "52px",
+        }}
+      >
+        <div className="mx-auto max-w-[1440px] px-5 sm:px-8 lg:px-12 xl:px-16">
+          <p className="eyebrow mb-4">Catalogue</p>
+          <h1
+            className="font-display font-normal tracking-[-0.03em] leading-[1.06] mb-4"
+            style={{
+              fontSize: "clamp(2.6rem, 5vw + 0.5rem, 5.5rem)",
+              color: "var(--ink)",
+            }}
+          >
+            {heading}
+          </h1>
+          <p className="font-ui text-[0.9375rem] mb-8" style={{ color: "var(--ink-muted)" }}>
+            {filtered.length.toLocaleString()} title{filtered.length !== 1 ? "s" : ""} available
           </p>
-          <div className="max-w-2xl">
+          <div style={{ maxWidth: "560px" }}>
             <SearchBar variant="page" />
           </div>
         </div>
       </div>
 
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid lg:grid-cols-[220px_1fr] gap-10">
-          <Suspense fallback={<div className="h-64 bg-soft-grey animate-pulse rounded-[25px]" />}>
+      {/* ── Content: sidebar + grid ── */}
+      <div className="mx-auto max-w-[1440px] px-5 sm:px-8 lg:px-12 xl:px-16 py-12">
+        <div className="grid lg:grid-cols-[240px_1fr] gap-10 xl:gap-14 items-start">
+
+          {/* Sidebar */}
+          <Suspense
+            fallback={
+              <div
+                className="h-[500px] animate-pulse rounded-[20px]"
+                style={{ background: "var(--border-subtle)" }}
+              />
+            }
+          >
             <BookFilters />
           </Suspense>
+
+          {/* Grid */}
           <BookGrid books={filtered} />
         </div>
       </div>

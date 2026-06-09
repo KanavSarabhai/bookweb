@@ -21,6 +21,7 @@ export interface Book {
   isNewArrival?: boolean;
   isFeatured?: boolean;
   isOnSale?: boolean;
+  coverUrl?: string;
 }
 
 export interface Category {
