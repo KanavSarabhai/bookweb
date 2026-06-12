@@ -1,13 +1,17 @@
 "use client";
 
 import Link from "next/link";
-import { Heart, ChevronRight } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { Heart, ChevronRight, ShoppingCart, Check, Zap } from "lucide-react";
+import { useState, useCallback } from "react";
 import type { Book } from "@/types/book";
 import { BookCover } from "@/components/books/BookCover";
 import { Rating } from "@/components/ui/Rating";
 import { Badge } from "@/components/ui/Badge";
-import { ActionLink } from "@/components/ui/ActionLink";
 import { formatPrice } from "@/lib/utils";
+import { useCart } from "@/context/CartContext";
+import { useWishlist } from "@/context/WishlistContext";
+import { useToast } from "@/components/ui/Toast";
 
 interface ProductDetailProps {
   book: Book;
@@ -15,6 +19,52 @@ interface ProductDetailProps {
 }
 
 export function ProductDetail({ book, related }: ProductDetailProps) {
+  const router = useRouter();
+  const { addItem, isInCart } = useCart();
+  const { toggleItem, isWishlisted } = useWishlist();
+  const { showToast } = useToast();
+
+  const [addingToCart, setAddingToCart] = useState(false);
+
+  const inCart = isInCart(book.id);
+  const wished = isWishlisted(book.id);
+
+  const handleAddToCart = useCallback(() => {
+    if (addingToCart) return;
+    setAddingToCart(true);
+    addItem(book);
+    showToast(`"${book.title.split(":")[0].trim()}" added to cart`, "cart");
+    setTimeout(() => setAddingToCart(false), 1500);
+  }, [addItem, addingToCart, book, showToast]);
+
+  const handleBuyNow = useCallback(() => {
+    addItem(book);
+    router.push("/cart");
+  }, [addItem, book, router]);
+
+  const handleWishlist = useCallback(() => {
+    toggleItem(book);
+    showToast(
+      wished ? "Removed from wishlist" : "Added to wishlist",
+      "wishlist"
+    );
+  }, [toggleItem, wished, book, showToast]);
+
+  const btnBase: React.CSSProperties = {
+    display: "inline-flex",
+    alignItems: "center",
+    gap: "8px",
+    fontFamily: "var(--font-inter, system-ui, sans-serif)",
+    fontSize: "0.9375rem",
+    fontWeight: 500,
+    padding: "12px 24px",
+    borderRadius: "6px",
+    border: "none",
+    cursor: "pointer",
+    transition: "all 0.2s ease",
+    whiteSpace: "nowrap",
+  };
+
   return (
     <div>
       <nav className="font-ui text-sm text-press-muted mb-8" aria-label="Breadcrumb">
@@ -77,16 +127,74 @@ export function ProductDetail({ book, related }: ProductDetailProps) {
             {book.inStock ? "In stock — ships in 1–2 days (India)" : "Out of stock"}
           </p>
 
+          {/* Action buttons */}
           <div className="flex flex-wrap gap-3 mb-10">
-            <ActionLink href="/cart">Buy now →</ActionLink>
-            <ActionLink href="/cart">Add to cart →</ActionLink>
-            <Link
-              href="/wishlist"
-              className="inline-flex items-center gap-2 font-ui text-sm text-brick border border-brick rounded-[3.75px] px-5 py-2.5 transition-opacity hover:opacity-70"
+            {/* Buy Now */}
+            <button
+              type="button"
+              onClick={handleBuyNow}
+              style={{
+                ...btnBase,
+                background: "#c46a3a",
+                color: "#fff",
+              }}
+              onMouseEnter={(e) => (e.currentTarget.style.background = "#a8582e")}
+              onMouseLeave={(e) => (e.currentTarget.style.background = "#c46a3a")}
+              aria-label={`Buy ${book.title} now`}
             >
-              <Heart size={16} aria-hidden />
-              Wishlist
-            </Link>
+              <Zap size={16} aria-hidden />
+              Buy now
+            </button>
+
+            {/* Add to Cart */}
+            <button
+              type="button"
+              onClick={handleAddToCart}
+              disabled={addingToCart}
+              style={{
+                ...btnBase,
+                background: addingToCart
+                  ? "rgba(196,106,58,0.12)"
+                  : inCart
+                  ? "#f5f0e8"
+                  : "#161616",
+                color: addingToCart || inCart ? "#c46a3a" : "#fff",
+                border: inCart ? "1px solid rgba(196,106,58,0.3)" : "none",
+                opacity: addingToCart ? 0.85 : 1,
+              }}
+              aria-label={inCart ? "Already in cart" : `Add ${book.title} to cart`}
+            >
+              {addingToCart ? (
+                <Check size={16} aria-hidden />
+              ) : (
+                <ShoppingCart size={16} aria-hidden />
+              )}
+              {addingToCart ? "Added!" : inCart ? "In cart" : "Add to cart"}
+            </button>
+
+            {/* Wishlist */}
+            <button
+              type="button"
+              onClick={handleWishlist}
+              className="inline-flex items-center gap-2 font-ui text-sm rounded-[6px] px-5 py-2.5 transition-all duration-200"
+              style={{
+                border: wished
+                  ? "1px solid rgba(196,106,58,0.5)"
+                  : "1px solid var(--brick, #c46a3a)",
+                color: "#c46a3a",
+                background: wished ? "rgba(196,106,58,0.08)" : "transparent",
+              }}
+              aria-label={wished ? "Remove from wishlist" : "Add to wishlist"}
+              aria-pressed={wished}
+            >
+              <Heart
+                size={16}
+                aria-hidden
+                fill={wished ? "#c46a3a" : "none"}
+                style={{ color: "#c46a3a" }}
+              />
+              {wished ? "Wishlisted" : "Wishlist"}
+            </button>
           </div>
 
           <dl className="grid grid-cols-2 gap-4 card-editorial bg-soft-grey font-ui text-sm mb-10">

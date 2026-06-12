@@ -28,7 +28,7 @@ export function SearchResults() {
     const next = new URLSearchParams(searchParams.toString());
     if (value) next.set(key, value);
     else next.delete(key);
-    router.push(`/search?${next.toString()}`);
+    router.push(`/books?${next.toString()}`);
   }
 
   const chipClass =

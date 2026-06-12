@@ -93,7 +93,8 @@ export function filterBooks(
         book.title.toLowerCase().includes(q) ||
         book.author.toLowerCase().includes(q) ||
         book.publisher.toLowerCase().includes(q) ||
-        book.category.toLowerCase().includes(q);
+        book.category.toLowerCase().includes(q) ||
+        (book.isbn?.toLowerCase().includes(q) ?? false);
       if (!match) return false;
     }
     return true;

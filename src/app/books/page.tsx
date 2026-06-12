@@ -2,8 +2,8 @@ import { Suspense } from "react";
 import type { Metadata } from "next";
 import { BookGrid } from "@/components/books/BookGrid";
 import { BookFilters } from "@/components/books/BookFilters";
-import { SearchBar } from "@/components/search/SearchBar";
 import { getFilteredBooks } from "@/lib/books-query";
+import { getCategoryBySlug } from "@/lib/data/categories";
 
 export const metadata: Metadata = {
   title: "Books",
@@ -26,70 +26,73 @@ export default async function BooksPage({ searchParams }: BooksPageProps) {
   const params = await searchParams;
   const filtered = getFilteredBooks(params);
 
-  const heading =
-    params.sort === "bestsellers"
-      ? "Bestsellers"
-      : params.sort === "new"
-        ? "New Arrivals"
-        : params.sort === "sale"
-          ? "On Sale"
-          : params.q
-            ? `Results for "${params.q}"`
-            : params.category
-              ? "Category"
-              : "Discover Books That Shape Builders";
+  // Build a readable heading
+  let heading = "All Books";
+  if (params.sort === "bestsellers") heading = "Bestsellers";
+  else if (params.sort === "new") heading = "New Arrivals";
+  else if (params.sort === "sale") heading = "On Sale";
+  else if (params.q) heading = `Results for "${params.q}"`;
+  else if (params.category) {
+    const cat = getCategoryBySlug(params.category);
+    heading = cat ? cat.name : "Category";
+  }
 
   return (
     <div style={{ background: "var(--surface)", minHeight: "100vh" }}>
 
-      {/* ── Editorial hero header ── */}
+      {/* ── Page header — compact ── */}
       <div
-        className="border-b"
         style={{
           background: "linear-gradient(160deg, #f8f5f0 0%, #f2ece2 100%)",
-          borderColor: "var(--border)",
-          paddingTop: "80px",
-          paddingBottom: "52px",
+          borderBottom: "1px solid var(--border)",
+          paddingTop: "32px",
+          paddingBottom: "28px",
         }}
       >
-        <div className="mx-auto max-w-[1440px] px-5 sm:px-8 lg:px-12 xl:px-16">
-          <p className="eyebrow mb-4">Catalogue</p>
+        <div className="mx-auto max-w-[1440px] px-4 sm:px-6 lg:px-12 xl:px-16">
+          <p className="eyebrow mb-2">Catalogue</p>
           <h1
-            className="font-display font-normal tracking-[-0.03em] leading-[1.06] mb-4"
-            style={{
-              fontSize: "clamp(2.6rem, 5vw + 0.5rem, 5.5rem)",
-              color: "var(--ink)",
-            }}
+            className="font-display font-normal tracking-[-0.025em] leading-[1.1] mb-2"
+            style={{ fontSize: "clamp(1.75rem, 3vw + 0.5rem, 2.75rem)", color: "var(--ink)" }}
           >
             {heading}
           </h1>
-          <p className="font-ui text-[0.9375rem] mb-8" style={{ color: "var(--ink-muted)" }}>
+          <p className="font-ui text-sm" style={{ color: "var(--ink-muted)" }}>
             {filtered.length.toLocaleString()} title{filtered.length !== 1 ? "s" : ""} available
           </p>
-          <div style={{ maxWidth: "560px" }}>
-            <SearchBar variant="page" />
-          </div>
         </div>
       </div>
 
       {/* ── Content: sidebar + grid ── */}
-      <div className="mx-auto max-w-[1440px] px-5 sm:px-8 lg:px-12 xl:px-16 py-12">
-        <div className="grid lg:grid-cols-[240px_1fr] gap-10 xl:gap-14 items-start">
+      <div className="mx-auto max-w-[1440px] px-4 sm:px-6 lg:px-12 xl:px-16 py-6 lg:py-10">
 
-          {/* Sidebar */}
-          <Suspense
-            fallback={
-              <div
-                className="h-[500px] animate-pulse rounded-[20px]"
-                style={{ background: "var(--border-subtle)" }}
-              />
-            }
-          >
-            <BookFilters />
+        {/* Mobile filters — shown inline above grid on small screens */}
+        <div className="block lg:hidden mb-6">
+          <Suspense fallback={null}>
+            <BookFilters mobile />
           </Suspense>
+        </div>
 
-          {/* Grid */}
-          <BookGrid books={filtered} />
+        <div className="grid lg:grid-cols-[220px_1fr] gap-8 xl:gap-12 items-start">
+
+          {/* Sidebar — desktop only */}
+          <div className="hidden lg:block">
+            <Suspense
+              fallback={
+                <div
+                  className="h-[400px] animate-pulse rounded-[16px]"
+                  style={{ background: "var(--border-subtle)" }}
+                />
+              }
+            >
+              <BookFilters />
+            </Suspense>
+          </div>
+
+          {/* Book grid */}
+          <div className="min-w-0">
+            <BookGrid books={filtered} />
+          </div>
         </div>
       </div>
     </div>

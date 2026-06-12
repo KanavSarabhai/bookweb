@@ -26,7 +26,7 @@ const typeIcons = {
 
 export function SearchBar({
   variant = "header",
-  placeholder = "Search by title, author, ISBN, or category...",
+  placeholder = "Search books...",
   className,
   autoFocus,
   defaultQuery = "",
@@ -38,6 +38,7 @@ export function SearchBar({
   const [suggestions, setSuggestions] = useState<SearchSuggestion[]>([]);
   const [open, setOpen] = useState(false);
   const [activeIndex, setActiveIndex] = useState(-1);
+  
   const containerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -53,15 +54,27 @@ export function SearchBar({
         setOpen(false);
       }
     }
+    
+    function handleGlobalKeyDown(e: KeyboardEvent) {
+      if ((e.ctrlKey || e.metaKey) && e.key === "k") {
+        e.preventDefault();
+        inputRef.current?.focus();
+      }
+    }
+    
     document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+    document.addEventListener("keydown", handleGlobalKeyDown);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("keydown", handleGlobalKeyDown);
+    };
   }, []);
 
   function navigateSearch() {
     const params = new URLSearchParams();
     if (query.trim()) params.set("q", query.trim());
     if (category) params.set("category", category);
-    router.push(`/search?${params.toString()}`);
+    router.push(`/books?${params.toString()}`);
     setOpen(false);
   }
 
@@ -88,24 +101,30 @@ export function SearchBar({
     }
   }
 
-  const isPill = variant === "hero" || variant === "page";
-  const heightClass = variant === "header" ? "h-9" : "h-14";
-
   return (
     <div ref={containerRef} className={cn("relative w-full", className)}>
-      <form onSubmit={handleSubmit} role="search" className="flex flex-col sm:flex-row gap-3">
+      <form onSubmit={handleSubmit} role="search" className="flex flex-col sm:flex-row gap-3 w-full">
         <div
           className={cn(
-            "flex flex-1 items-center gap-2 bg-white/50 border border-[#121212]/10 transition-all focus-within:border-[#121212]/20 focus-within:bg-white/80",
-            isPill ? "rounded-[50px]" : "rounded-[50px]",
-            heightClass
+            "flex flex-1 items-center gap-2 transition-all duration-300 rounded-full group",
+            variant === "header" ? "h-11" : "h-[56px]",
+            "bg-white/80 backdrop-blur-md border border-[#E7E1D8]",
+            "shadow-[0_2px_8px_rgba(0,0,0,0.04)]",
+            "hover:border-[#d0c8be] hover:shadow-[0_4px_12px_rgba(0,0,0,0.06)] hover:bg-white/90",
+            "focus-within:border-[#C46A3A] focus-within:shadow-[0_0_0_4px_rgba(196,106,58,0.1),0_4px_16px_rgba(0,0,0,0.08)] focus-within:bg-white"
           )}
         >
-          <Search
-            className="ml-3 shrink-0 text-[#121212]/40"
-            size={variant === "header" ? 16 : 20}
-            aria-hidden
-          />
+          <button
+            type="submit"
+            aria-label="Search"
+            className="ml-4 shrink-0 text-[#121212]/40 group-hover:text-[#121212]/60 group-focus-within:text-[#C46A3A] transition-colors duration-300"
+          >
+            <Search
+              size={variant === "header" ? 18 : 22}
+              strokeWidth={1.5}
+              aria-hidden
+            />
+          </button>
           <input
             ref={inputRef}
             type="search"
@@ -123,7 +142,7 @@ export function SearchBar({
             aria-expanded={open}
             aria-controls="search-suggestions"
             aria-autocomplete="list"
-            className="flex-1 bg-transparent font-ui text-sm text-press placeholder:text-press-muted/50 outline-none pr-2"
+            className="flex-1 bg-transparent font-ui text-[0.9375rem] text-[#161616] placeholder:text-[#161616]/40 outline-none pr-4 w-full"
           />
           {query && (
             <button
@@ -134,10 +153,10 @@ export function SearchBar({
                 setOpen(false);
                 inputRef.current?.focus();
               }}
-              className="mr-3 p-1 text-press-muted hover:text-brick transition-opacity"
+              className="mr-2 p-1.5 text-[#161616]/40 hover:text-[#C46A3A] transition-colors rounded-full"
               aria-label="Clear search"
             >
-              <X size={16} />
+              <X size={16} strokeWidth={2} />
             </button>
           )}
         </div>
@@ -148,8 +167,8 @@ export function SearchBar({
             onChange={(e) => setCategory(e.target.value)}
             aria-label="Filter by category"
             className={cn(
-              "font-ui text-sm border border-brick text-brick bg-cream px-4 outline-none transition-opacity hover:opacity-70",
-              isPill ? "rounded-[50px] h-11 sm:h-14" : "rounded-[50px] h-11"
+              "font-ui text-sm border border-[#E7E1D8] text-[#161616] bg-white px-4 outline-none transition-all hover:border-[#C46A3A] rounded-full focus:border-[#C46A3A] focus:shadow-[0_0_0_4px_rgba(196,106,58,0.1)]",
+              variant === "header" ? "h-11" : "h-14"
             )}
           >
             <option value="">All categories</option>
@@ -166,7 +185,7 @@ export function SearchBar({
         <ul
           id="search-suggestions"
           role="listbox"
-          className="absolute z-50 top-full left-0 right-0 mt-2 bg-cream border border-brick rounded-[12px] overflow-hidden animate-fade-in"
+          className="absolute z-50 top-[calc(100%+8px)] left-0 right-0 bg-white border border-[#E7E1D8] rounded-[16px] overflow-hidden shadow-[0_8px_32px_rgba(0,0,0,0.08)] animate-fade-in"
         >
           {suggestions.map((s, i) => {
             const Icon = typeIcons[s.type];
@@ -175,25 +194,39 @@ export function SearchBar({
                 <button
                   type="button"
                   className={cn(
-                    "w-full flex items-center gap-3 px-4 py-3 font-ui text-sm text-left transition-opacity",
-                    i === activeIndex ? "bg-soft-grey opacity-100" : "hover:opacity-70 text-press"
+                    "w-full flex items-center gap-3 px-4 py-3 font-ui text-sm text-left transition-colors",
+                    i === activeIndex ? "bg-[#F8F5F0]" : "hover:bg-[#F8F5F0]"
                   )}
+                  style={{ color: "#161616" }}
                   onMouseDown={() => {
                     router.push(s.href);
                     setOpen(false);
                   }}
                 >
-                  <Icon size={16} className="shrink-0 text-brick" aria-hidden />
-                  <span className="flex-1 truncate">{s.label}</span>
-                  <span className="text-xs text-press-muted capitalize">{s.type}</span>
+                  <div
+                    className="flex items-center justify-center rounded-lg"
+                    style={{
+                      width: "32px",
+                      height: "32px",
+                      background: "rgba(196,106,58,0.1)",
+                      color: "#C46A3A",
+                    }}
+                  >
+                    <Icon size={16} strokeWidth={1.5} aria-hidden />
+                  </div>
+                  <span className="flex-1 truncate font-medium">{s.label}</span>
+                  <span className="text-xs uppercase tracking-wider font-semibold opacity-40">
+                    {s.type}
+                  </span>
                 </button>
               </li>
             );
           })}
-          <li className="border-t border-brick/20">
+          <li className="border-t border-[#E7E1D8]">
             <button
               type="button"
-              className="w-full px-4 py-3 font-ui text-sm text-brick text-left transition-opacity hover:opacity-70"
+              className="w-full px-4 py-3.5 font-ui text-sm font-medium text-left transition-colors hover:bg-[#F8F5F0]"
+              style={{ color: "#C46A3A" }}
               onMouseDown={navigateSearch}
             >
               View all results for &ldquo;{query}&rdquo;

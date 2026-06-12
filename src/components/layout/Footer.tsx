@@ -23,10 +23,9 @@ const footerLinks = {
     { label: "Track my order", href: "/account/track-order" },
   ],
   policies: [
-    { label: "Privacy Policy", href: "/privacy" },
-    { label: "Terms of Use", href: "/terms" },
-    { label: "Shipping", href: "/shipping" },
-    { label: "Returns", href: "/returns" },
+    { label: "Contact Us", href: "/contact" },
+    { label: "Retailers", href: "/retailers" },
+    { label: "Publishers", href: "/publishers" },
   ],
 };
 
