@@ -67,45 +67,38 @@ export function ProductDetail({ book, related }: ProductDetailProps) {
 
   return (
     <div>
-      <nav className="font-ui text-sm text-press-muted mb-8" aria-label="Breadcrumb">
-        <ol className="flex flex-wrap items-center gap-1">
+      <nav className="font-ui text-sm text-press-muted mb-6 sm:mb-8 overflow-hidden" aria-label="Breadcrumb">
+        <ol className="flex items-center gap-1.5 whitespace-nowrap overflow-x-auto pb-2 scrollbar-none">
           <li>
-            <Link href="/" className="text-brick hover:opacity-70 transition-opacity">
-              Home
-            </Link>
+            <Link href="/" className="text-brick hover:opacity-70 transition-opacity">Home</Link>
           </li>
-          <ChevronRight size={14} className="opacity-40" aria-hidden />
+          <ChevronRight size={14} className="opacity-40 shrink-0" aria-hidden />
           <li>
-            <Link href="/books" className="text-brick hover:opacity-70 transition-opacity">
-              Books
-            </Link>
+            <Link href="/books" className="text-brick hover:opacity-70 transition-opacity">Books</Link>
           </li>
-          <ChevronRight size={14} className="opacity-40" aria-hidden />
+          <ChevronRight size={14} className="opacity-40 shrink-0" aria-hidden />
           <li>
-            <Link
-              href={`/categories/${book.categorySlug}`}
-              className="text-brick hover:opacity-70 transition-opacity"
-            >
+            <Link href={`/categories/${book.categorySlug}`} className="text-brick hover:opacity-70 transition-opacity">
               {book.category}
             </Link>
           </li>
-          <ChevronRight size={14} className="opacity-40" aria-hidden />
-          <li className="text-press truncate max-w-[200px] sm:max-w-none">{book.title}</li>
+          <ChevronRight size={14} className="opacity-40 shrink-0" aria-hidden />
+          <li className="text-press truncate">{book.title}</li>
         </ol>
       </nav>
 
-      <div className="grid lg:grid-cols-[minmax(0,380px)_1fr] gap-10 lg:gap-16">
-        <div className="flex justify-center items-start lg:sticky lg:top-[120px]">
-          <div className="relative group w-full max-w-[320px] mx-auto lg:max-w-none">
+      <div className="flex flex-col lg:grid lg:grid-cols-[minmax(0,420px)_1fr] gap-8 sm:gap-10 lg:gap-16">
+        <div className="flex justify-center items-start lg:sticky lg:top-[120px] w-full">
+          <div className="relative group w-full max-w-[280px] sm:max-w-[320px] lg:max-w-none mx-auto">
             {/* Elegant Floating Shadow */}
             <div className="absolute inset-0 bg-black/20 blur-3xl rounded-full transform translate-y-12 scale-75 opacity-70 group-hover:opacity-100 group-hover:translate-y-16 transition-all duration-700 pointer-events-none"></div>
-            <div className="relative z-10 transition-transform duration-500 group-hover:-translate-y-2">
-              <BookCover book={book} size="xl" className="rounded-[4px] shadow-[0_12px_32px_-8px_rgba(0,0,0,0.3),0_4px_12px_-4px_rgba(0,0,0,0.15)] w-full h-auto" />
+            <div className="relative z-10 transition-transform duration-500 group-hover:-translate-y-2 w-full">
+              <BookCover book={book} size="xl" className="shadow-[0_12px_32px_-8px_rgba(0,0,0,0.3),0_4px_12px_-4px_rgba(0,0,0,0.15)] mx-auto" />
             </div>
           </div>
         </div>
 
-        <div>
+        <div className="flex flex-col mt-4 lg:mt-0">
           <div className="flex flex-wrap gap-2 mb-4">
             <Badge variant="muted">{book.category}</Badge>
             {book.isOnSale && <Badge variant="sale">Sale</Badge>}
@@ -113,32 +106,33 @@ export function ProductDetail({ book, related }: ProductDetailProps) {
             {book.isNewArrival && <Badge>New</Badge>}
           </div>
 
-          <h1 className="heading-page mb-3">{book.title}</h1>
-          <p className="font-ui text-base text-press-muted mb-1">by {book.author}</p>
-          <p className="font-ui text-sm text-press-muted mb-5">{book.publisher}</p>
+          <h1 className="heading-page mb-2 sm:mb-3 text-[1.75rem] sm:text-4xl lg:text-[2.5rem] leading-[1.15]">{book.title}</h1>
+          <p className="font-ui text-[1rem] sm:text-base text-press-muted mb-1">by {book.author}</p>
+          <p className="font-ui text-[0.875rem] text-press-muted mb-6">{book.publisher}</p>
 
-          <Rating value={book.rating} reviewCount={book.reviewCount} size="md" className="mb-6" />
+          <Rating value={book.rating} reviewCount={book.reviewCount} size="md" className="mb-6 sm:mb-8" />
 
-          <div className="flex items-baseline gap-3 mb-2">
-            <p className="font-ui text-2xl font-semibold text-press tabular-nums">
+          <div className="flex flex-wrap items-baseline gap-3 mb-2">
+            <p className="font-ui text-2xl sm:text-3xl font-semibold text-press tabular-nums">
               {formatPrice(book.price)}
             </p>
             {book.originalPrice && book.originalPrice > book.price && (
-              <p className="font-ui text-lg text-press-muted line-through tabular-nums">
+              <p className="font-ui text-[1.125rem] sm:text-lg text-press-muted line-through tabular-nums">
                 {formatPrice(book.originalPrice)}
               </p>
             )}
           </div>
-          <p className="font-ui text-sm text-press-muted mb-8">
+          <p className="font-ui text-sm text-[#16a34a] font-medium mb-8">
             {book.inStock ? "In stock — ships in 1–2 days (India)" : "Out of stock"}
           </p>
 
           {/* Action buttons */}
-          <div className="flex flex-wrap gap-3 mb-10">
+          <div className="flex flex-col sm:flex-row flex-wrap gap-3 mb-10 w-full">
             {/* Buy Now */}
             <button
               type="button"
               onClick={handleBuyNow}
+              className="w-full sm:w-auto justify-center"
               style={{
                 ...btnBase,
                 background: "#c46a3a",
@@ -157,6 +151,7 @@ export function ProductDetail({ book, related }: ProductDetailProps) {
               type="button"
               onClick={handleAddToCart}
               disabled={addingToCart}
+              className="w-full sm:w-auto justify-center"
               style={{
                 ...btnBase,
                 background: addingToCart
@@ -182,7 +177,7 @@ export function ProductDetail({ book, related }: ProductDetailProps) {
             <button
               type="button"
               onClick={handleWishlist}
-              className="inline-flex items-center gap-2 font-ui text-sm rounded-[6px] px-5 py-2.5 transition-all duration-200"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 font-ui text-[0.9375rem] font-medium rounded-[6px] px-6 py-3 transition-all duration-200"
               style={{
                 border: wished
                   ? "1px solid rgba(196,106,58,0.5)"
@@ -203,24 +198,24 @@ export function ProductDetail({ book, related }: ProductDetailProps) {
             </button>
           </div>
 
-          <dl className="grid grid-cols-2 gap-4 card-editorial bg-soft-grey font-ui text-sm mb-10">
+          <dl className="grid grid-cols-2 gap-y-4 gap-x-6 bg-[#F8F5F0] rounded-2xl p-6 font-ui text-[0.9375rem] mb-12 border border-[#E7E1D8]">
             {book.isbn && (
               <>
-                <dt className="text-press-muted">ISBN</dt>
-                <dd className="text-press">{book.isbn}</dd>
+                <dt className="text-[#9a9a9a] font-medium">ISBN</dt>
+                <dd className="text-[#161616] font-semibold">{book.isbn}</dd>
               </>
             )}
-            <dt className="text-press-muted">Binding</dt>
-            <dd className="text-press">{book.binding ?? "Paperback"}</dd>
-            <dt className="text-press-muted">Language</dt>
-            <dd className="text-press">{book.language ?? "English"}</dd>
-            <dt className="text-press-muted">Publisher</dt>
-            <dd className="text-press">{book.publisher}</dd>
-            <dt className="text-press-muted">Category</dt>
+            <dt className="text-[#9a9a9a] font-medium">Binding</dt>
+            <dd className="text-[#161616] font-semibold">{book.binding ?? "Paperback"}</dd>
+            <dt className="text-[#9a9a9a] font-medium">Language</dt>
+            <dd className="text-[#161616] font-semibold">{book.language ?? "English"}</dd>
+            <dt className="text-[#9a9a9a] font-medium">Publisher</dt>
+            <dd className="text-[#161616] font-semibold">{book.publisher}</dd>
+            <dt className="text-[#9a9a9a] font-medium">Category</dt>
             <dd>
               <Link
                 href={`/categories/${book.categorySlug}`}
-                className="text-brick hover:opacity-70 transition-opacity"
+                className="text-[#c46a3a] font-semibold hover:opacity-70 transition-opacity"
               >
                 {book.category}
               </Link>
@@ -228,9 +223,9 @@ export function ProductDetail({ book, related }: ProductDetailProps) {
           </dl>
 
           {book.description && (
-            <div>
-              <h2 className="font-ui text-base font-semibold text-press mb-3">About this book</h2>
-              <p className="text-body leading-relaxed">{book.description}</p>
+            <div className="prose prose-press max-w-none">
+              <h2 className="font-display text-[1.5rem] tracking-tight text-[#161616] mb-4">About this book</h2>
+              <p className="font-ui text-[1.0625rem] leading-[1.7] text-[#6b6b6b] whitespace-pre-wrap">{book.description}</p>
             </div>
           )}
         </div>

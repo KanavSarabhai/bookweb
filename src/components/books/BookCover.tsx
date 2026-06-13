@@ -1,6 +1,9 @@
+"use client";
+
 import type { Book } from "@/types/book";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
+import { useState } from "react";
 
 interface BookCoverProps {
   book: Pick<Book, "title" | "author" | "coverColor" | "coverAccent" | "coverUrl">;
@@ -16,7 +19,8 @@ const sizeClasses = {
 };
 
 export function BookCover({ book, size = "md", className }: BookCoverProps) {
-  const hasCover = Boolean(book.coverUrl);
+  const [imageError, setImageError] = useState(false);
+  const hasCover = Boolean(book.coverUrl) && !imageError;
 
   if (hasCover && book.coverUrl) {
     return (
@@ -39,6 +43,7 @@ export function BookCover({ book, size = "md", className }: BookCoverProps) {
             size === "md" ? "160px" : "128px"
           }
           quality={size === "xl" ? 90 : 75}
+          onError={() => setImageError(true)}
         />
       </div>
     );
