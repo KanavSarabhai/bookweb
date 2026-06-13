@@ -101,7 +101,7 @@ export function BookCard({ book, className }: BookCardProps) {
               src={book.coverUrl!}
               alt={`${book.title} cover`}
               fill
-              sizes="(max-width: 640px) calc(50vw - 32px), (max-width: 1024px) calc(33vw - 32px), 220px"
+              sizes="(max-width: 640px) calc(100vw - 32px), (max-width: 1024px) calc(50vw - 32px), 220px"
               className="object-contain"
               style={{ padding: "20px" }}
               quality={75}
@@ -162,20 +162,32 @@ export function BookCard({ book, className }: BookCardProps) {
             </div>
           )}
         </Link>
+      </div>
 
-        {/* Badges — top-left */}
-        <div
-          style={{
-            position: "absolute",
-            top: "12px",
-            left: "12px",
-            display: "flex",
-            flexDirection: "column",
-            gap: "4px",
-            zIndex: 2,
-            pointerEvents: "none",
-          }}
-        >
+      {/* ── Info block ── */}
+      <div
+        style={{
+          padding: "16px 20px 20px",
+          display: "flex",
+          flexDirection: "column",
+          flex: 1,
+          gap: "8px",
+        }}
+      >
+        {/* Badges & Category */}
+        <div style={{ display: "flex", alignItems: "center", gap: "8px", flexWrap: "wrap", marginBottom: "4px" }}>
+          <span
+            style={{
+              fontFamily: "var(--font-inter, system-ui, sans-serif)",
+              fontSize: "0.6rem",
+              fontWeight: 700,
+              textTransform: "uppercase",
+              letterSpacing: "0.14em",
+              color: "#c46a3a",
+            }}
+          >
+            {book.category}
+          </span>
           {discount && (
             <span
               style={{
@@ -226,64 +238,6 @@ export function BookCard({ book, className }: BookCardProps) {
           )}
         </div>
 
-        {/* Wishlist button — top-right */}
-        <button
-          type="button"
-          aria-label={wished ? "Remove from wishlist" : "Add to wishlist"}
-          onClick={handleWishlist}
-          style={{
-            position: "absolute",
-            top: "12px",
-            right: "12px",
-            width: "32px",
-            height: "32px",
-            borderRadius: "50%",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            background: wished ? "rgba(196,106,58,0.15)" : "rgba(255,255,255,0.9)",
-            backdropFilter: "blur(4px)",
-            border: wished ? "1px solid rgba(196,106,58,0.3)" : "1px solid rgba(0,0,0,0.08)",
-            cursor: "pointer",
-            transition: "all 0.2s ease",
-            zIndex: 2,
-            flexShrink: 0,
-          }}
-        >
-          <Heart
-            size={14}
-            strokeWidth={1.8}
-            style={{ color: wished ? "#c46a3a" : "#9a9a9a" }}
-            fill={wished ? "#c46a3a" : "none"}
-          />
-        </button>
-      </div>
-
-      {/* ── Info block ── */}
-      <div
-        style={{
-          padding: "16px 20px 20px",
-          display: "flex",
-          flexDirection: "column",
-          flex: 1,
-          gap: "4px",
-        }}
-      >
-        {/* Category tag */}
-        <p
-          style={{
-            fontFamily: "var(--font-inter, system-ui, sans-serif)",
-            fontSize: "0.6rem",
-            fontWeight: 700,
-            textTransform: "uppercase",
-            letterSpacing: "0.14em",
-            color: "#c46a3a",
-            marginBottom: "2px",
-          }}
-        >
-          {book.category}
-        </p>
-
         {/* Title */}
         <Link href={`/books/${book.slug}`} tabIndex={-1} style={{ textDecoration: "none" }}>
           <h3
@@ -313,28 +267,20 @@ export function BookCard({ book, className }: BookCardProps) {
             overflow: "hidden",
             textOverflow: "ellipsis",
             whiteSpace: "nowrap",
-            marginBottom: "12px",
+            marginBottom: "8px",
           }}
         >
           {book.author}
         </p>
 
         {/* Price + CTA — always at bottom */}
-        <div
-          style={{
-            marginTop: "auto",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            gap: "8px",
-          }}
-        >
+        <div className="mt-auto flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-2 pt-2">
           {/* Price */}
           <div style={{ display: "flex", alignItems: "baseline", gap: "6px" }}>
             <span
               style={{
                 fontFamily: "var(--font-inter, system-ui, sans-serif)",
-                fontSize: "0.9375rem",
+                fontSize: "1rem",
                 fontWeight: 700,
                 fontVariantNumeric: "tabular-nums",
                 color: "#161616",
@@ -357,41 +303,69 @@ export function BookCard({ book, className }: BookCardProps) {
             )}
           </div>
 
-          {/* Add to cart */}
-          <button
-            type="button"
-            onClick={handleAddToCart}
-            aria-label={`Add ${book.title} to cart`}
-            disabled={addingToCart}
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: "6px",
-              fontFamily: "var(--font-inter, system-ui, sans-serif)",
-              fontSize: "0.75rem",
-              fontWeight: 600,
-              padding: "8px 14px",
-              borderRadius: "999px",
-              border: "none",
-              cursor: addingToCart ? "default" : "pointer",
-              transition: "all 0.2s ease",
-              background: addingToCart
-                ? "rgba(196,106,58,0.14)"
-                : inCart
-                ? "rgba(196,106,58,0.10)"
-                : "#161616",
-              color: addingToCart || inCart ? "#c46a3a" : "#fff",
-              opacity: addingToCart ? 0.8 : 1,
-              flexShrink: 0,
-            }}
-          >
-            {addingToCart ? (
-              <Check size={12} aria-hidden />
-            ) : (
-              <ShoppingCart size={12} aria-hidden />
-            )}
-            {addingToCart ? "Added!" : inCart ? "In cart" : "Add"}
-          </button>
+          {/* Action buttons */}
+          <div className="flex items-center gap-2 w-full sm:w-auto">
+            <button
+              type="button"
+              onClick={handleAddToCart}
+              aria-label={`Add ${book.title} to cart`}
+              disabled={addingToCart}
+              className="flex-1 sm:flex-none"
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: "6px",
+                fontFamily: "var(--font-inter, system-ui, sans-serif)",
+                fontSize: "0.8125rem",
+                fontWeight: 600,
+                padding: "10px 16px",
+                borderRadius: "999px",
+                border: "none",
+                cursor: addingToCart ? "default" : "pointer",
+                transition: "all 0.2s ease",
+                background: addingToCart
+                  ? "rgba(196,106,58,0.14)"
+                  : inCart
+                  ? "rgba(196,106,58,0.10)"
+                  : "#161616",
+                color: addingToCart || inCart ? "#c46a3a" : "#fff",
+                opacity: addingToCart ? 0.8 : 1,
+              }}
+            >
+              {addingToCart ? (
+                <Check size={14} aria-hidden />
+              ) : (
+                <ShoppingCart size={14} aria-hidden />
+              )}
+              {addingToCart ? "Added!" : inCart ? "In cart" : "Add"}
+            </button>
+            <button
+              type="button"
+              aria-label={wished ? "Remove from wishlist" : "Add to wishlist"}
+              onClick={handleWishlist}
+              style={{
+                width: "40px",
+                height: "40px",
+                borderRadius: "50%",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                background: wished ? "rgba(196,106,58,0.15)" : "#f8f5f0",
+                border: wished ? "1px solid rgba(196,106,58,0.3)" : "1px solid #e7e1d8",
+                cursor: "pointer",
+                transition: "all 0.2s ease",
+                flexShrink: 0,
+              }}
+            >
+              <Heart
+                size={16}
+                strokeWidth={1.8}
+                style={{ color: wished ? "#c46a3a" : "#161616" }}
+                fill={wished ? "#c46a3a" : "none"}
+              />
+            </button>
+          </div>
         </div>
       </div>
     </article>

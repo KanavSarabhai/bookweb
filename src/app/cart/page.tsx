@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Minus, Plus, Trash2, ShoppingBag, ArrowRight, Package } from "lucide-react";
+import { useState } from "react";
 import { useCart } from "@/context/CartContext";
 import { formatPrice } from "@/lib/utils";
 import { useToast } from "@/components/ui/Toast";
@@ -10,6 +11,7 @@ import { useToast } from "@/components/ui/Toast";
 export default function CartPage() {
   const { items, removeItem, updateQuantity, clearCart, totalCount, totalPrice } = useCart();
   const { showToast } = useToast();
+  const [showCheckoutModal, setShowCheckoutModal] = useState(false);
 
   function handleRemove(bookId: string, title: string) {
     removeItem(bookId);
@@ -321,6 +323,7 @@ export default function CartPage() {
 
             <button
               type="button"
+              onClick={() => setShowCheckoutModal(true)}
               className="w-full inline-flex items-center justify-center gap-2 font-ui text-[0.9375rem] font-medium py-4 rounded-full transition-all duration-200"
               style={{ background: "#c46a3a", color: "#fff" }}
               onMouseEnter={(e) => (e.currentTarget.style.background = "#a8582e")}
@@ -340,6 +343,37 @@ export default function CartPage() {
           </div>
         </div>
       </div>
+
+      {/* Checkout Modal */}
+      {showCheckoutModal && (
+        <div className="fixed inset-0 z-[200] bg-black/40 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in">
+          <div className="bg-white rounded-2xl max-w-sm w-full p-8 text-center shadow-2xl relative" style={{ transform: "translateY(0) scale(1)", transition: "all 0.3s cubic-bezier(0.16, 1, 0.3, 1)" }}>
+            <button
+              type="button"
+              onClick={() => setShowCheckoutModal(false)}
+              className="absolute top-4 right-4 p-2 text-[#9a9a9a] hover:text-[#161616] hover:bg-black/5 rounded-full transition-colors"
+              aria-label="Close"
+            >
+              <Trash2 size={20} strokeWidth={2} className="hidden" /> {/* Using a text 'X' or Lucide X if imported */}
+              <span style={{ fontSize: "20px", fontWeight: "bold", lineHeight: 1 }}>×</span>
+            </button>
+            <div className="w-16 h-16 bg-[#F8F5F0] rounded-full flex items-center justify-center mx-auto mb-6">
+              <Package size={28} className="text-[#c46a3a]" />
+            </div>
+            <h3 className="font-display text-2xl text-[#161616] mb-3">Checkout Coming Soon</h3>
+            <p className="font-ui text-[0.9375rem] text-[#6b6b6b] mb-8 leading-relaxed">
+              We are currently upgrading our secure checkout system. Please check back later to complete your purchase.
+            </p>
+            <button
+              type="button"
+              onClick={() => setShowCheckoutModal(false)}
+              className="w-full py-3.5 bg-[#161616] text-white font-ui font-medium rounded-full hover:bg-black/80 transition-colors"
+            >
+              Okay, got it
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

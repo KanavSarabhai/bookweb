@@ -42,6 +42,36 @@ export function getInstantSuggestions(query: string, limit = 8): SearchSuggestio
     }
   }
 
+  // Publisher
+  for (const book of books) {
+    if (book.publisher.toLowerCase().includes(q) && suggestions.length < limit) {
+      const key = `publisher-${book.publisher}`;
+      if (!seen.has(key)) {
+        seen.add(key);
+        suggestions.push({
+          type: "publisher",
+          label: book.publisher,
+          href: `/books?q=${encodeURIComponent(book.publisher)}`,
+        });
+      }
+    }
+  }
+
+  // ISBN
+  for (const book of books) {
+    if (book.isbn?.toLowerCase().includes(q) && suggestions.length < limit) {
+      const key = `book-${book.slug}`;
+      if (!seen.has(key)) {
+        seen.add(key);
+        suggestions.push({
+          type: "book",
+          label: book.title,
+          href: `/books/${book.slug}`,
+        });
+      }
+    }
+  }
+
   const categories = [
     "Artificial Intelligence",
     "Machine Learning",

@@ -102,25 +102,25 @@ export function SearchBar({
   }
 
   return (
-    <div ref={containerRef} className={cn("relative w-full", className)}>
+    <div ref={containerRef} className={cn("relative w-full max-w-full", className)}>
       <form onSubmit={handleSubmit} role="search" className="flex flex-col sm:flex-row gap-3 w-full">
         <div
           className={cn(
-            "flex flex-1 items-center gap-2 transition-all duration-300 rounded-full group",
-            variant === "header" ? "h-11" : "h-[56px]",
-            "bg-white/80 backdrop-blur-md border border-[#E7E1D8]",
+            "flex flex-1 items-center gap-3 px-4 transition-all duration-300 rounded-full overflow-hidden group",
+            "h-[44px] md:h-[46px]",
+            "bg-[#FFFFFF] border border-[#E7E1D8]",
             "shadow-[0_2px_8px_rgba(0,0,0,0.04)]",
-            "hover:border-[#d0c8be] hover:shadow-[0_4px_12px_rgba(0,0,0,0.06)] hover:bg-white/90",
-            "focus-within:border-[#C46A3A] focus-within:shadow-[0_0_0_4px_rgba(196,106,58,0.1),0_4px_16px_rgba(0,0,0,0.08)] focus-within:bg-white"
+            "hover:border-[#C46A3A] hover:shadow-[0_4px_12px_rgba(0,0,0,0.06)]",
+            "focus-within:border-[#C46A3A] focus-within:shadow-[0_0_0_4px_rgba(196,106,58,0.1)] focus-within:bg-[#FFFFFF]"
           )}
         >
           <button
             type="submit"
             aria-label="Search"
-            className="ml-4 shrink-0 text-[#121212]/40 group-hover:text-[#121212]/60 group-focus-within:text-[#C46A3A] transition-colors duration-300"
+            className="shrink-0 text-[#121212]/40 group-hover:text-[#C46A3A] group-focus-within:text-[#C46A3A] transition-colors duration-300"
           >
             <Search
-              size={variant === "header" ? 18 : 22}
+              size={18}
               strokeWidth={1.5}
               aria-hidden
             />
@@ -142,7 +142,7 @@ export function SearchBar({
             aria-expanded={open}
             aria-controls="search-suggestions"
             aria-autocomplete="list"
-            className="flex-1 bg-transparent font-ui text-[0.9375rem] text-[#161616] placeholder:text-[#161616]/40 outline-none pr-4 w-full"
+            className="flex-1 min-w-0 bg-transparent font-ui text-[0.9375rem] text-[#161616] placeholder:text-[#161616]/40 border-none outline-none"
           />
           {query && (
             <button
@@ -153,7 +153,7 @@ export function SearchBar({
                 setOpen(false);
                 inputRef.current?.focus();
               }}
-              className="mr-2 p-1.5 text-[#161616]/40 hover:text-[#C46A3A] transition-colors rounded-full"
+              className="p-1.5 text-[#161616]/40 hover:text-[#C46A3A] transition-colors rounded-full shrink-0"
               aria-label="Clear search"
             >
               <X size={16} strokeWidth={2} />

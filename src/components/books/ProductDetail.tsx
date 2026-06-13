@@ -95,8 +95,14 @@ export function ProductDetail({ book, related }: ProductDetailProps) {
       </nav>
 
       <div className="grid lg:grid-cols-[minmax(0,380px)_1fr] gap-10 lg:gap-16">
-        <div className="card-editorial flex justify-center items-center">
-          <BookCover book={book} size="xl" className="rounded-[12px]" />
+        <div className="flex justify-center items-start lg:sticky lg:top-[120px]">
+          <div className="relative group w-full max-w-[320px] mx-auto lg:max-w-none">
+            {/* Elegant Floating Shadow */}
+            <div className="absolute inset-0 bg-black/20 blur-3xl rounded-full transform translate-y-12 scale-75 opacity-70 group-hover:opacity-100 group-hover:translate-y-16 transition-all duration-700 pointer-events-none"></div>
+            <div className="relative z-10 transition-transform duration-500 group-hover:-translate-y-2">
+              <BookCover book={book} size="xl" className="rounded-[4px] shadow-[0_12px_32px_-8px_rgba(0,0,0,0.3),0_4px_12px_-4px_rgba(0,0,0,0.15)] w-full h-auto" />
+            </div>
+          </div>
         </div>
 
         <div>

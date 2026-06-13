@@ -33,8 +33,10 @@ export function CategoryNav() {
                 <Link
                   href={href}
                   className={cn(
-                    "inline-flex items-center font-ui text-sm px-3 sm:px-4 py-1 transition-opacity hover:opacity-70 whitespace-nowrap",
-                    active ? "text-brick font-medium" : "text-brick"
+                    "inline-flex items-center font-ui text-[0.875rem] px-5 py-2 transition-all duration-200 rounded-full whitespace-nowrap border",
+                    active 
+                      ? "bg-[#c46a3a] text-white border-transparent font-medium shadow-sm" 
+                      : "bg-white text-[#161616] border-[#E7E1D8] hover:border-[#c46a3a] hover:text-[#c46a3a]"
                   )}
                 >
                   {cat.label}
